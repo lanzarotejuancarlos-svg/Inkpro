@@ -1,0 +1,1098 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Isla Digital — IA & Automatización · Lanzarote</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black:    #060608;
+    --deep:     #0d0b14;
+    --violet:   #7c3aed;
+    --violet2:  #a855f7;
+    --violet3:  #c084fc;
+    --pink:     #d946ef;
+    --pink2:    #e879f9;
+    --lavender: #f0abfc;
+    --white:    #ffffff;
+    --muted:    #a09ab8;
+    --border:   rgba(168,85,247,.18);
+    --grad: linear-gradient(135deg, #7c3aed 0%, #a855f7 40%, #d946ef 100%);
+    --grad2: linear-gradient(90deg, #7c3aed, #d946ef);
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--black);
+    color: var(--white);
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* ── CURSOR ── */
+  .cursor {
+    position: fixed; width: 10px; height: 10px;
+    background: var(--pink);
+    border-radius: 50%;
+    pointer-events: none; z-index: 9999;
+    transform: translate(-50%,-50%);
+    transition: width .2s, height .2s, opacity .2s;
+    mix-blend-mode: screen;
+  }
+  .cursor-ring {
+    position: fixed; width: 40px; height: 40px;
+    border: 1px solid rgba(217,70,239,.5);
+    border-radius: 50%;
+    pointer-events: none; z-index: 9998;
+    transform: translate(-50%,-50%);
+    transition: all .12s ease-out;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; inset: 0 0 auto 0;
+    z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.8rem 5rem;
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(168,85,247,.1);
+    background: rgba(6,6,8,.7);
+  }
+  .nav-logo {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 800;
+    letter-spacing: -.01em;
+    color: var(--white);
+    position: relative;
+    text-decoration: none;
+    display: flex; align-items: center; gap: .6rem;
+  }
+  .nav-logo .logo-mark { width: 28px; height: 28px; flex-shrink: 0; }
+  .nav-logo .brand-name {
+    background: var(--grad);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+  .nav-links a {
+    font-size: .8rem;
+    font-weight: 400;
+    letter-spacing: .04em;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color .25s;
+  }
+  .nav-links a:hover { color: var(--white); }
+  .nav-cta {
+    font-family: 'Syne', sans-serif;
+    font-size: .75rem;
+    font-weight: 600;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--white);
+    background: var(--grad);
+    padding: .65rem 1.6rem;
+    border-radius: 2px;
+    transition: opacity .25s, transform .25s;
+  }
+  .nav-cta:hover { opacity: .85; transform: translateY(-1px); }
+
+  /* ── HERO ── */
+  #hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex; align-items: center;
+    padding: 0 5rem;
+    overflow: hidden;
+  }
+
+  .hero-glow {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 55% 65% at 75% 40%, rgba(168,85,247,.18) 0%, transparent 65%),
+      radial-gradient(ellipse 35% 45% at 85% 80%, rgba(217,70,239,.1) 0%, transparent 55%),
+      radial-gradient(ellipse 25% 30% at 10% 20%, rgba(192,132,252,.06) 0%, transparent 50%),
+      var(--black);
+  }
+
+  .hero-grid {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(168,85,247,.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(168,85,247,.06) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(ellipse 80% 80% at 70% 50%, black 0%, transparent 80%);
+  }
+
+  .orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    pointer-events: none;
+  }
+  .orb-1 {
+    width: 500px; height: 500px;
+    right: -100px; top: 50%;
+    transform: translateY(-50%);
+    background: radial-gradient(circle, rgba(168,85,247,.25), transparent 70%);
+    animation: orbFloat 8s ease-in-out infinite;
+  }
+  .orb-2 {
+    width: 300px; height: 300px;
+    right: 20%; top: 10%;
+    background: radial-gradient(circle, rgba(217,70,239,.15), transparent 70%);
+    animation: orbFloat 12s ease-in-out infinite 2s;
+  }
+
+  .hero-content { position: relative; max-width: 820px; }
+
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: .6rem;
+    background: rgba(168,85,247,.15);
+    border: 1px solid rgba(168,85,247,.35);
+    border-radius: 100px;
+    padding: .4rem 1rem .4rem .5rem;
+    margin-bottom: 2.5rem;
+    animation: fadeUp .7s ease both;
+  }
+  .badge-dot {
+    width: 6px; height: 6px;
+    background: var(--pink);
+    border-radius: 50%;
+    animation: pulse 2s ease infinite;
+  }
+  .hero-badge span {
+    font-size: .7rem;
+    font-weight: 500;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--violet3);
+  }
+
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(3.2rem, 6.5vw, 6.5rem);
+    font-weight: 800;
+    line-height: 1.0;
+    letter-spacing: -.03em;
+    margin-bottom: 2rem;
+    animation: fadeUp .7s ease .1s both;
+  }
+  .grad-text {
+    background: var(--grad);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .outline-text {
+    -webkit-text-stroke: 2px rgba(217,70,239,.5);
+    color: transparent;
+  }
+
+  .hero-desc {
+    font-size: 1.15rem;
+    font-weight: 300;
+    line-height: 1.75;
+    color: var(--muted);
+    max-width: 500px;
+    margin-bottom: 3rem;
+    animation: fadeUp .7s ease .2s both;
+  }
+  .hero-desc strong { color: var(--lavender); font-weight: 500; }
+
+  .hero-actions {
+    display: flex; align-items: center; gap: 1.5rem;
+    animation: fadeUp .7s ease .3s both;
+  }
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: .75rem;
+    background: var(--grad);
+    color: var(--white);
+    text-decoration: none;
+    font-family: 'Syne', sans-serif;
+    font-size: .8rem;
+    font-weight: 600;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    padding: 1rem 2.2rem;
+    border-radius: 2px;
+    transition: transform .3s, box-shadow .3s;
+    box-shadow: 0 0 0 rgba(168,85,247,0);
+  }
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px rgba(168,85,247,.4);
+  }
+  .btn-ghost {
+    display: inline-flex; align-items: center; gap: .6rem;
+    color: var(--muted);
+    text-decoration: none;
+    font-size: .8rem;
+    font-weight: 400;
+    letter-spacing: .04em;
+    transition: color .25s;
+    border: 1px solid rgba(255,255,255,.1);
+    padding: 1rem 1.8rem;
+    border-radius: 2px;
+  }
+  .btn-ghost:hover { color: var(--white); border-color: rgba(217,70,239,.4); }
+
+  .hero-scroll {
+    position: absolute; bottom: 2.5rem; left: 50%;
+    transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: .5rem;
+    font-size: .6rem;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: rgba(160,154,184,.5);
+    animation: pulse 2.5s ease infinite;
+  }
+  .scroll-line {
+    width: 1px; height: 45px;
+    background: linear-gradient(to bottom, var(--pink), transparent);
+  }
+
+  /* ── MARQUEE ── */
+  .marquee-track {
+    overflow: hidden;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 1rem 0;
+    background: rgba(168,85,247,.04);
+  }
+  .marquee-inner {
+    display: flex; gap: 3.5rem;
+    animation: marquee 20s linear infinite;
+    white-space: nowrap;
+  }
+  .marquee-item {
+    font-family: 'Syne', sans-serif;
+    font-size: .65rem;
+    font-weight: 600;
+    letter-spacing: .25em;
+    text-transform: uppercase;
+    color: var(--muted);
+    flex-shrink: 0;
+    display: flex; align-items: center; gap: .75rem;
+  }
+  .marquee-item::before {
+    content: '';
+    width: 4px; height: 4px;
+    background: var(--pink);
+    border-radius: 50%;
+  }
+
+  /* ── SECTIONS COMMON ── */
+  section { padding: 8rem 5rem; }
+
+  .section-eyebrow {
+    font-family: 'Syne', sans-serif;
+    font-size: .65rem;
+    font-weight: 700;
+    letter-spacing: .3em;
+    text-transform: uppercase;
+    background: var(--grad2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 1.2rem;
+    display: flex; align-items: center; gap: .75rem;
+  }
+  .section-eyebrow::before {
+    content: '';
+    width: 28px; height: 1px;
+    background: var(--grad2);
+    flex-shrink: 0;
+    -webkit-text-fill-color: initial;
+  }
+
+  h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2.2rem, 3.8vw, 3.8rem);
+    font-weight: 800;
+    line-height: 1.08;
+    letter-spacing: -.025em;
+    color: var(--white);
+    margin-bottom: 4rem;
+    max-width: 600px;
+  }
+  h2 .sub { font-weight: 300; color: var(--muted); display: block; font-size: .7em; letter-spacing: 0; }
+
+  /* ── SERVICIOS ── */
+  #servicios { background: var(--black); }
+
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+  }
+  .service-card {
+    background: var(--black);
+    padding: 2.8rem;
+    position: relative;
+    overflow: hidden;
+    transition: background .35s;
+    cursor: none;
+  }
+  .service-card::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(168,85,247,.08), transparent);
+    opacity: 0;
+    transition: opacity .35s;
+  }
+  .service-card:hover { background: rgba(13,11,20,1); }
+  .service-card:hover::after { opacity: 1; }
+  .service-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--grad);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform .4s ease;
+  }
+  .service-card:hover::before { transform: scaleX(1); }
+
+  .svc-num {
+    font-family: 'Syne', sans-serif;
+    font-size: .6rem;
+    font-weight: 700;
+    letter-spacing: .2em;
+    color: var(--pink);
+    margin-bottom: 2rem;
+    position: relative; z-index: 1;
+  }
+  .svc-icon {
+    font-size: 2rem; display: block;
+    margin-bottom: 1.2rem;
+    position: relative; z-index: 1;
+    transition: transform .3s;
+  }
+  .service-card:hover .svc-icon { transform: scale(1.1); }
+  .service-card h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: .75rem;
+    position: relative; z-index: 1;
+  }
+  .service-card p {
+    font-size: .92rem;
+    font-weight: 300;
+    line-height: 1.75;
+    color: var(--muted);
+    position: relative; z-index: 1;
+  }
+  .svc-pills {
+    display: flex; flex-wrap: wrap; gap: .4rem;
+    margin-top: 1.8rem;
+    position: relative; z-index: 1;
+  }
+  .pill {
+    font-size: .6rem;
+    font-weight: 600;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--violet3);
+    background: rgba(168,85,247,.12);
+    border: 1px solid rgba(168,85,247,.25);
+    padding: .25rem .7rem;
+    border-radius: 2px;
+  }
+
+  /* ── PROCESO ── */
+  #proceso {
+    background: var(--deep);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .process-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+    margin-top: 5rem;
+    position: relative;
+  }
+  .process-grid::before {
+    content: '';
+    position: absolute;
+    top: 28px; left: 12.5%; right: 12.5%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--violet), var(--pink), var(--violet), transparent);
+    opacity: .35;
+  }
+  .step { text-align: center; }
+  .step-circle {
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    background: var(--grad);
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 1.5rem;
+    font-family: 'Syne', sans-serif;
+    font-size: .75rem;
+    font-weight: 800;
+    color: var(--white);
+    letter-spacing: .05em;
+    box-shadow: 0 0 30px rgba(168,85,247,.4);
+  }
+  .step h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: .6rem;
+  }
+  .step p {
+    font-size: .88rem;
+    font-weight: 300;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+
+  /* ── SECTORES ── */
+  #sectores { background: var(--black); }
+  .sectors-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin-top: 5rem;
+  }
+  .sector-card {
+    display: flex; align-items: flex-start; gap: 1.2rem;
+    padding: 1.8rem 2rem;
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    background: rgba(13,11,20,.6);
+    transition: border-color .3s, background .3s, transform .3s;
+    cursor: none;
+  }
+  .sector-card:hover {
+    border-color: rgba(217,70,239,.4);
+    background: rgba(168,85,247,.07);
+    transform: translateY(-2px);
+  }
+  .sector-emoji { font-size: 1.6rem; flex-shrink: 0; }
+  .sector-card h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: .4rem;
+  }
+  .sector-card p { font-size: .88rem; font-weight: 300; color: var(--muted); line-height: 1.65; }
+
+  /* ── NOSOTROS ── */
+  #nosotros {
+    background: var(--deep);
+    border-top: 1px solid var(--border);
+  }
+  .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 7rem; align-items: center; }
+  .about-visual { position: relative; height: 460px; display: flex; align-items: center; justify-content: center; }
+  .about-visual svg { width: 100%; height: 100%; }
+
+  .about-content p {
+    font-size: 1.05rem;
+    font-weight: 300;
+    line-height: 1.85;
+    color: var(--muted);
+    margin-bottom: 1.2rem;
+  }
+  .about-content strong { color: var(--lavender); font-weight: 500; }
+
+  .stats-row {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem; margin-top: 3rem;
+    padding-top: 2.5rem;
+    border-top: 1px solid var(--border);
+  }
+  .stat-val {
+    font-family: 'Syne', sans-serif;
+    font-size: 2.2rem;
+    font-weight: 800;
+    background: var(--grad);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1;
+    margin-bottom: .4rem;
+  }
+  .stat-label {
+    font-size: .72rem;
+    font-weight: 400;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  /* ── CONTACTO ── */
+  #contacto {
+    background: var(--black);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    border-top: 1px solid var(--border);
+  }
+  #contacto::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 70% 60% at 50% 110%, rgba(168,85,247,.15), transparent);
+    pointer-events: none;
+  }
+  .cta-inner { position: relative; }
+  #contacto h2 { max-width: 700px; margin: 1.5rem auto 1rem; text-align: center; }
+  #contacto p { color: var(--muted); margin-bottom: 3rem; font-size: 1.05rem; }
+
+  .cta-form {
+    display: flex; max-width: 480px;
+    margin: 0 auto 2.5rem;
+    border: 1px solid rgba(217,70,239,.35);
+    border-radius: 2px;
+    overflow: hidden;
+    background: rgba(13,11,20,.8);
+    backdrop-filter: blur(10px);
+  }
+  .cta-form input {
+    flex: 1;
+    background: transparent;
+    border: none; outline: none;
+    padding: 1rem 1.4rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: .88rem;
+    color: var(--white);
+  }
+  .cta-form input::placeholder { color: rgba(160,154,184,.5); }
+  .cta-form button {
+    background: var(--grad);
+    border: none;
+    color: var(--white);
+    font-family: 'Syne', sans-serif;
+    font-size: .7rem;
+    font-weight: 700;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    padding: 1rem 1.6rem;
+    cursor: none;
+    transition: opacity .25s;
+    white-space: nowrap;
+  }
+  .cta-form button:hover { opacity: .85; }
+
+  .contact-row {
+    display: flex; justify-content: center; gap: 2.5rem;
+    flex-wrap: wrap;
+  }
+  .contact-chip {
+    display: flex; align-items: center; gap: .5rem;
+    font-size: .8rem;
+    font-weight: 400;
+    color: var(--muted);
+    padding: .5rem 1.2rem;
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    transition: border-color .25s, color .25s;
+  }
+  .contact-chip:hover { border-color: rgba(217,70,239,.5); color: var(--lavender); }
+  .contact-chip .dot { color: var(--pink); }
+
+  /* ── FOOTER ── */
+  footer {
+    padding: 2.5rem 5rem;
+    border-top: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 1rem;
+    background: var(--black);
+  }
+  .footer-logo {
+    font-family: 'Syne', sans-serif;
+    font-size: .95rem;
+    font-weight: 800;
+    color: var(--white);
+    text-decoration: none;
+    display: flex; align-items: center; gap: .5rem;
+  }
+  .footer-logo .logo-mark-sm { width: 22px; height: 22px; }
+  .footer-logo .brand-name {
+    background: var(--grad);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .footer-links { display: flex; gap: 2rem; list-style: none; }
+  .footer-links a {
+    font-size: .75rem; color: var(--muted);
+    text-decoration: none; transition: color .2s;
+  }
+  .footer-links a:hover { color: var(--white); }
+  .footer-copy { font-size: .72rem; color: rgba(160,154,184,.45); }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(28px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+  @keyframes pulse {
+    0%,100% { opacity: .4; }
+    50%      { opacity: 1; }
+  }
+  @keyframes orbFloat {
+    0%,100% { transform: translateY(-50%) scale(1); }
+    50%     { transform: translateY(calc(-50% - 20px)) scale(1.05); }
+  }
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+  }
+  @keyframes float {
+    0%,100% { transform: translateY(0); }
+    50%     { transform: translateY(-10px); }
+  }
+
+  .reveal { opacity: 0; transform: translateY(22px); transition: opacity .65s ease, transform .65s ease; }
+  .reveal.visible { opacity: 1; transform: none; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 960px) {
+    nav { padding: 1.5rem 2rem; }
+    .nav-links { display: none; }
+    section { padding: 5rem 2rem; }
+    #hero { padding: 0 2rem; }
+    .services-grid, .process-grid, .sectors-grid, .about-grid { grid-template-columns: 1fr; }
+    .process-grid::before { display: none; }
+    h1 { font-size: 3rem; }
+    footer { padding: 2rem; flex-direction: column; text-align: center; }
+    .footer-links { justify-content: center; }
+    .stats-row { grid-template-columns: repeat(3,1fr); }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- Isla Digital logo SVG mark (reusable via inline template) -->
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <linearGradient id="idGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#7c3aed"/>
+      <stop offset="50%" stop-color="#a855f7"/>
+      <stop offset="100%" stop-color="#d946ef"/>
+    </linearGradient>
+  </defs>
+</svg>
+
+<!-- ── NAV ── -->
+<nav>
+  <a href="#" class="nav-logo">
+    <svg class="logo-mark" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="navGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#7c3aed"/>
+          <stop offset="100%" stop-color="#d946ef"/>
+        </linearGradient>
+      </defs>
+      <!-- Triangle outline (right side open inner) -->
+      <polygon points="50,4 96,88 4,88" stroke="url(#navGrad)" stroke-width="9" fill="none" stroke-linejoin="miter"/>
+      <!-- Inner triangle (bottom open, creates the "delta" cutout) -->
+      <polygon points="50,38 78,88 22,88" stroke="url(#navGrad)" stroke-width="7" fill="none" stroke-linejoin="miter"/>
+      <!-- Diagonal stroke left (the "I" slash) -->
+      <line x1="24" y1="88" x2="50" y2="20" stroke="url(#navGrad)" stroke-width="9" stroke-linecap="round"/>
+      <!-- Diamond at top -->
+      <polygon points="50,2 57,14 50,22 43,14" fill="url(#navGrad)"/>
+    </svg>
+    <span class="brand-name">Isla Digital</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#servicios">Servicios</a></li>
+    <li><a href="#proceso">Proceso</a></li>
+    <li><a href="#sectores">Sectores</a></li>
+    <li><a href="#nosotros">Nosotros</a></li>
+  </ul>
+  <a href="#contacto" class="nav-cta">Hablar con nosotros</a>
+</nav>
+
+<!-- ── HERO ── -->
+<section id="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-grid"></div>
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+
+  <div class="hero-content">
+    <div class="hero-badge">
+      <div class="badge-dot"></div>
+      <span>Lanzarote · Islas Canarias</span>
+    </div>
+
+    <h1>
+      <span class="grad-text">Tecnología</span><br>
+      que hace<br>
+      <span class="outline-text">crecer</span><br>
+      tu negocio
+    </h1>
+
+    <p class="hero-desc">
+      Diseñamos webs, desplegamos <strong>Inteligencia Artificial</strong> y automatizamos procesos para que las empresas de Lanzarote compitan sin límites.
+    </p>
+
+    <div class="hero-actions">
+      <a href="#contacto" class="btn-primary">Ver qué podemos hacer →</a>
+      <a href="#servicios" class="btn-ghost">Explorar servicios</a>
+    </div>
+  </div>
+
+  <div class="hero-scroll">
+    <div class="scroll-line"></div>
+    <span>scroll</span>
+  </div>
+</section>
+
+<!-- ── MARQUEE ── -->
+<div class="marquee-track">
+  <div class="marquee-inner">
+    <span class="marquee-item">Automatización de Procesos</span>
+    <span class="marquee-item">Inteligencia Artificial</span>
+    <span class="marquee-item">Diseño Web</span>
+    <span class="marquee-item">Apps Móviles</span>
+    <span class="marquee-item">Análisis de Datos</span>
+    <span class="marquee-item">CRM & ERP</span>
+    <span class="marquee-item">WhatsApp Business</span>
+    <span class="marquee-item">SEO & Marketing</span>
+    <span class="marquee-item">Automatización de Procesos</span>
+    <span class="marquee-item">Inteligencia Artificial</span>
+    <span class="marquee-item">Diseño Web</span>
+    <span class="marquee-item">Apps Móviles</span>
+    <span class="marquee-item">Análisis de Datos</span>
+    <span class="marquee-item">CRM & ERP</span>
+    <span class="marquee-item">WhatsApp Business</span>
+    <span class="marquee-item">SEO & Marketing</span>
+  </div>
+</div>
+
+<!-- ── SERVICIOS ── -->
+<section id="servicios">
+  <div class="section-eyebrow">Servicios</div>
+  <h2>Todo lo que necesitas<br><span class="sub">para transformar tu empresa</span></h2>
+
+  <div class="services-grid">
+    <div class="service-card reveal">
+      <div class="svc-num">01</div>
+      <span class="svc-icon">🌐</span>
+      <h3>Diseño & Desarrollo Web</h3>
+      <p>Webs rápidas, modernas y optimizadas para SEO. Landing pages, e-commerce y portales con foco en convertir visitas en clientes reales.</p>
+      <div class="svc-pills">
+        <span class="pill">Web</span><span class="pill">E-commerce</span><span class="pill">SEO</span>
+      </div>
+    </div>
+    <div class="service-card reveal">
+      <div class="svc-num">02</div>
+      <span class="svc-icon">📱</span>
+      <h3>Apps Móviles</h3>
+      <p>Aplicaciones nativas y multiplataforma para iOS y Android. Desde el diseño de UX hasta la publicación en las tiendas de apps.</p>
+      <div class="svc-pills">
+        <span class="pill">iOS</span><span class="pill">Android</span><span class="pill">React Native</span>
+      </div>
+    </div>
+    <div class="service-card reveal">
+      <div class="svc-num">03</div>
+      <span class="svc-icon">🤖</span>
+      <h3>Asistentes IA & Chatbots</h3>
+      <p>Asistentes virtuales para WhatsApp, web o email que atienden clientes 24/7, responden preguntas y capturan leads automáticamente.</p>
+      <div class="svc-pills">
+        <span class="pill">WhatsApp</span><span class="pill">ChatBot</span><span class="pill">GPT</span>
+      </div>
+    </div>
+    <div class="service-card reveal">
+      <div class="svc-num">04</div>
+      <span class="svc-icon">⚡</span>
+      <h3>Automatización de Procesos</h3>
+      <p>Eliminamos tareas manuales y repetitivas. Integramos CRM, email, contabilidad y más para que todo fluya de manera automática.</p>
+      <div class="svc-pills">
+        <span class="pill">n8n</span><span class="pill">Zapier</span><span class="pill">Make</span>
+      </div>
+    </div>
+    <div class="service-card reveal">
+      <div class="svc-num">05</div>
+      <span class="svc-icon">📊</span>
+      <h3>Análisis & Business Intelligence</h3>
+      <p>Dashboards en tiempo real y reportes automatizados para tomar decisiones basadas en datos, no en intuición.</p>
+      <div class="svc-pills">
+        <span class="pill">Dashboards</span><span class="pill">KPIs</span><span class="pill">Datos</span>
+      </div>
+    </div>
+    <div class="service-card reveal">
+      <div class="svc-num">06</div>
+      <span class="svc-icon">🔗</span>
+      <h3>Integraciones & CRM</h3>
+      <p>Conectamos todos tus sistemas. HubSpot, Salesforce, Google Workspace, Airtable — el ecosistema digital perfecto para tu operación.</p>
+      <div class="svc-pills">
+        <span class="pill">CRM</span><span class="pill">APIs</span><span class="pill">Integración</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── PROCESO ── -->
+<section id="proceso">
+  <div class="section-eyebrow">Metodología</div>
+  <h2>Así trabajamos<br><span class="sub">contigo, paso a paso</span></h2>
+
+  <div class="process-grid">
+    <div class="step reveal">
+      <div class="step-circle">01</div>
+      <h3>Diagnóstico</h3>
+      <p>Analizamos tus procesos, identificamos cuellos de botella y oportunidades de mejora reales.</p>
+    </div>
+    <div class="step reveal">
+      <div class="step-circle">02</div>
+      <h3>Estrategia</h3>
+      <p>Diseñamos un plan de acción claro con prioridades, plazos y métricas de éxito definidas.</p>
+    </div>
+    <div class="step reveal">
+      <div class="step-circle">03</div>
+      <h3>Implementación</h3>
+      <p>Ejecutamos las soluciones de forma ágil, con iteraciones rápidas y feedback constante.</p>
+    </div>
+    <div class="step reveal">
+      <div class="step-circle">04</div>
+      <h3>Optimización</h3>
+      <p>Monitorizamos los resultados y optimizamos continuamente para maximizar el impacto.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ── SECTORES ── -->
+<section id="sectores">
+  <div class="section-eyebrow">Sectores</div>
+  <h2>Conocemos Lanzarote<br><span class="sub">y sus negocios</span></h2>
+
+  <div class="sectors-grid">
+    <div class="sector-card reveal">
+      <span class="sector-emoji">🏨</span>
+      <div>
+        <h3>Turismo & Hostelería</h3>
+        <p>Hoteles, restaurantes y agencias de viaje. Automatizamos reservas, atención al cliente y gestión de reseñas.</p>
+      </div>
+    </div>
+    <div class="sector-card reveal">
+      <span class="sector-emoji">🏗️</span>
+      <div>
+        <h3>Construcción & Inmobiliaria</h3>
+        <p>Gestión de proyectos, seguimiento de clientes y presentación de propiedades con herramientas modernas.</p>
+      </div>
+    </div>
+    <div class="sector-card reveal">
+      <span class="sector-emoji">🛍️</span>
+      <div>
+        <h3>Comercio Local</h3>
+        <p>Tiendas físicas y online que venden más gracias a la automatización del marketing y la atención al cliente.</p>
+      </div>
+    </div>
+    <div class="sector-card reveal">
+      <span class="sector-emoji">⚕️</span>
+      <div>
+        <h3>Salud & Bienestar</h3>
+        <p>Clínicas y centros de estética con citas automáticas, recordatorios y gestión de pacientes integrada.</p>
+      </div>
+    </div>
+    <div class="sector-card reveal">
+      <span class="sector-emoji">🎓</span>
+      <div>
+        <h3>Formación & Servicios</h3>
+        <p>Academias y consultoras con procesos digitalizados y clientes mejor atendidos en menos tiempo.</p>
+      </div>
+    </div>
+    <div class="sector-card reveal">
+      <span class="sector-emoji">🌿</span>
+      <div>
+        <h3>Agricultura & Alimentación</h3>
+        <p>Productores locales y empresas del sector primario que necesitan visibilidad digital y procesos modernos.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── NOSOTROS ── -->
+<section id="nosotros">
+  <div class="about-grid">
+    <div class="about-visual reveal">
+      <svg viewBox="0 0 420 420" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="glowGrad2" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#a855f7" stop-opacity=".6"/>
+            <stop offset="100%" stop-color="#a855f7" stop-opacity="0"/>
+          </radialGradient>
+          <linearGradient id="lineGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#7c3aed"/>
+            <stop offset="50%" stop-color="#a855f7"/>
+            <stop offset="100%" stop-color="#d946ef"/>
+          </linearGradient>
+        </defs>
+
+        <!-- Outer rings -->
+        <circle cx="210" cy="210" r="180" stroke="url(#lineGrad2)" stroke-width=".5" opacity=".2"/>
+        <circle cx="210" cy="210" r="140" stroke="url(#lineGrad2)" stroke-width=".5" opacity=".25"/>
+        <circle cx="210" cy="210" r="100" stroke="url(#lineGrad2)" stroke-width=".5" opacity=".3"/>
+
+        <!-- Spinning ring -->
+        <circle cx="210" cy="210" r="165" stroke="url(#lineGrad2)" stroke-width="1" stroke-dasharray="8 20" opacity=".4" style="transform-origin:210px 210px; animation: spin 18s linear infinite"/>
+
+        <!-- Center glow -->
+        <circle cx="210" cy="210" r="80" fill="url(#glowGrad2)"/>
+
+        <!-- Isla Digital logo mark centered -->
+        <!-- Outer triangle -->
+        <polygon points="210,135 268,245 152,245" stroke="url(#lineGrad2)" stroke-width="10" fill="none" stroke-linejoin="miter"/>
+        <!-- Inner triangle -->
+        <polygon points="210,175 248,245 172,245" stroke="url(#lineGrad2)" stroke-width="8" fill="none" stroke-linejoin="miter"/>
+        <!-- Slash stroke (left diagonal) -->
+        <line x1="154" y1="245" x2="210" y2="148" stroke="url(#lineGrad2)" stroke-width="10" stroke-linecap="round"/>
+        <!-- Diamond at top -->
+        <polygon points="210,128 217,140 210,150 203,140" fill="url(#lineGrad2)"/>
+
+        <!-- Orbiting dots -->
+        <circle cx="210" cy="45" r="5" fill="#a855f7" style="transform-origin:210px 210px; animation: spin 8s linear infinite"/>
+        <circle cx="210" cy="375" r="3" fill="#d946ef" opacity=".6" style="transform-origin:210px 210px; animation: spin 8s linear infinite reverse"/>
+        <circle cx="45" cy="210" r="4" fill="#7c3aed" style="transform-origin:210px 210px; animation: spin 12s linear infinite .5s"/>
+        <circle cx="375" cy="210" r="3" fill="#d946ef" opacity=".7" style="transform-origin:210px 210px; animation: spin 12s linear infinite reverse .5s"/>
+
+        <!-- Cross lines -->
+        <line x1="210" y1="30" x2="210" y2="390" stroke="rgba(168,85,247,.1)" stroke-width="1"/>
+        <line x1="30" y1="210" x2="390" y2="210" stroke="rgba(168,85,247,.1)" stroke-width="1"/>
+        <line x1="80" y1="80" x2="340" y2="340" stroke="rgba(168,85,247,.06)" stroke-width="1"/>
+        <line x1="340" y1="80" x2="80" y2="340" stroke="rgba(168,85,247,.06)" stroke-width="1"/>
+      </svg>
+    </div>
+
+    <div class="about-content reveal">
+      <div class="section-eyebrow">Nosotros</div>
+      <h2>Somos de aquí.<br><span class="sub">Pensamos global.</span></h2>
+      <p>Somos un equipo de <strong>especialistas en tecnología e IA</strong> con base en Lanzarote. Conocemos de primera mano los retos de los negocios locales: la estacionalidad, la competencia internacional y la necesidad de eficiencia.</p>
+      <p>No vendemos soluciones genéricas. <strong>Diseñamos cada proyecto a medida</strong> para que encaje con tu equipo, tu presupuesto y tus objetivos reales.</p>
+      <p>Hablamos el mismo idioma que tú, y eso lo cambia todo.</p>
+
+      <div class="stats-row">
+        <div>
+          <div class="stat-val">48h</div>
+          <div class="stat-label">Respuesta</div>
+        </div>
+        <div>
+          <div class="stat-val">100%</div>
+          <div class="stat-label">A medida</div>
+        </div>
+        <div>
+          <div class="stat-val">∞</div>
+          <div class="stat-label">Soporte</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CONTACTO ── -->
+<section id="contacto">
+  <div class="cta-inner">
+    <div class="section-eyebrow" style="justify-content:center">Contacto</div>
+    <h2>¿Listo para el <span class="grad-text">siguiente nivel?</span></h2>
+    <p>Cuéntanos tu mayor problema. Tenemos la solución.</p>
+
+    <div class="cta-form">
+      <input type="email" placeholder="tu@email.com" />
+      <button type="button">Hablemos →</button>
+    </div>
+
+    <div class="contact-row">
+      <div class="contact-chip"><span class="dot">✉</span> hola@isladigital.com</div>
+      <div class="contact-chip"><span class="dot">📍</span> Lanzarote, Islas Canarias</div>
+      <div class="contact-chip"><span class="dot">📱</span> WhatsApp disponible</div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <a href="#" class="footer-logo">
+    <svg class="logo-mark-sm" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="footGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#7c3aed"/>
+          <stop offset="100%" stop-color="#d946ef"/>
+        </linearGradient>
+      </defs>
+      <polygon points="50,4 96,88 4,88" stroke="url(#footGrad)" stroke-width="9" fill="none" stroke-linejoin="miter"/>
+      <polygon points="50,38 78,88 22,88" stroke="url(#footGrad)" stroke-width="7" fill="none" stroke-linejoin="miter"/>
+      <line x1="24" y1="88" x2="50" y2="20" stroke="url(#footGrad)" stroke-width="9" stroke-linecap="round"/>
+      <polygon points="50,2 57,14 50,22 43,14" fill="url(#footGrad)"/>
+    </svg>
+    <span class="brand-name">Isla Digital</span>
+  </a>
+  <ul class="footer-links">
+    <li><a href="#servicios">Servicios</a></li>
+    <li><a href="#proceso">Proceso</a></li>
+    <li><a href="#nosotros">Nosotros</a></li>
+    <li><a href="#contacto">Contacto</a></li>
+  </ul>
+  <div class="footer-copy">© 2025 Isla Digital · Lanzarote, Islas Canarias</div>
+</footer>
+
+<script>
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.left = mx + 'px';
+    cursor.style.top = my + 'px';
+  });
+
+  (function animateRing() {
+    rx += (mx - rx) * 0.1;
+    ry += (my - ry) * 0.1;
+    ring.style.left = rx + 'px';
+    ring.style.top = ry + 'px';
+    requestAnimationFrame(animateRing);
+  })();
+
+  document.querySelectorAll('a, button, .service-card, .sector-card').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      cursor.style.width = '18px'; cursor.style.height = '18px';
+      ring.style.width = '54px'; ring.style.height = '54px';
+      ring.style.borderColor = 'rgba(217,70,239,.7)';
+    });
+    el.addEventListener('mouseleave', () => {
+      cursor.style.width = '10px'; cursor.style.height = '10px';
+      ring.style.width = '40px'; ring.style.height = '40px';
+      ring.style.borderColor = 'rgba(217,70,239,.5)';
+    });
+  });
+
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) setTimeout(() => e.target.classList.add('visible'), i * 70);
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+  document.querySelectorAll('.service-card').forEach((c, i) => {
+    c.style.transitionDelay = (i * 0.08) + 's';
+  });
+</script>
+</body>
+</html>
