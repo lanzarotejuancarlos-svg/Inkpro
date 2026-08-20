@@ -401,11 +401,13 @@
     position: relative; z-index: 1;
   }
   .svc-icon {
-    font-size: 2rem; display: block;
+    display: block;
+    width: 40px; height: 40px;
     margin-bottom: 1.2rem;
     position: relative; z-index: 1;
     transition: transform .3s;
   }
+  .svc-icon svg { width: 100%; height: 100%; }
   .service-card:hover .svc-icon { transform: scale(1.1); }
   .service-card h3 {
     font-family: 'Syne', sans-serif;
@@ -510,7 +512,8 @@
     background: rgba(168,85,247,.07);
     transform: translateY(-2px);
   }
-  .sector-emoji { font-size: 1.6rem; flex-shrink: 0; }
+  .sector-emoji { width: 28px; height: 28px; flex-shrink: 0; display: flex; align-items: center; }
+  .sector-emoji svg { width: 100%; height: 100%; }
   .sector-card h3 {
     font-family: 'Syne', sans-serif;
     font-size: 1rem;
@@ -631,7 +634,8 @@
     transition: border-color .25s, color .25s;
   }
   .contact-chip:hover { border-color: rgba(217,70,239,.5); color: var(--lavender); }
-  .contact-chip .dot { color: var(--pink); }
+  .contact-chip .dot { display: flex; align-items: center; width: 16px; height: 16px; flex-shrink: 0; }
+  .contact-chip .dot svg { width: 100%; height: 100%; }
 
   /* ── FOOTER ── */
   footer {
@@ -709,6 +713,17 @@
 </style>
 </head>
 <body>
+
+<!-- shared SVG gradient for all icons -->
+<svg width="0" height="0" style="position:absolute;overflow:hidden" aria-hidden="true">
+  <defs>
+    <linearGradient id="iconGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#7c3aed"/>
+      <stop offset="55%" stop-color="#a855f7"/>
+      <stop offset="100%" stop-color="#d946ef"/>
+    </linearGradient>
+  </defs>
+</svg>
 
 <div class="cursor" id="cursor"></div>
 <div class="cursor-ring" id="cursorRing"></div>
@@ -801,7 +816,7 @@
   <div class="services-grid">
     <div class="service-card reveal">
       <div class="svc-num">01</div>
-      <span class="svc-icon">🌐</span>
+      <span class="svc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="url(#iconGrad)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span>
       <h3>Diseño & Desarrollo Web</h3>
       <p>Webs rápidas, modernas y optimizadas para SEO. Landing pages, e-commerce y portales con foco en convertir visitas en clientes reales.</p>
       <div class="svc-pills">
@@ -810,7 +825,7 @@
     </div>
     <div class="service-card reveal">
       <div class="svc-num">02</div>
-      <span class="svc-icon">📱</span>
+      <span class="svc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="url(#iconGrad)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg></span>
       <h3>Apps Móviles</h3>
       <p>Aplicaciones nativas y multiplataforma para iOS y Android. Desde el diseño de UX hasta la publicación en las tiendas de apps.</p>
       <div class="svc-pills">
@@ -819,7 +834,7 @@
     </div>
     <div class="service-card reveal">
       <div class="svc-num">03</div>
-      <span class="svc-icon">🤖</span>
+      <span class="svc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="url(#iconGrad)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><line x1="9" y1="10" x2="9.01" y2="10"/><line x1="15" y1="10" x2="15.01" y2="10"/><path d="M9.5 13.5s.83 1 2.5 1 2.5-1 2.5-1"/></svg></span>
       <h3>Asistentes IA & Chatbots</h3>
       <p>Asistentes virtuales para WhatsApp, web o email que atienden clientes 24/7, responden preguntas y capturan leads automáticamente.</p>
       <div class="svc-pills">
@@ -828,7 +843,7 @@
     </div>
     <div class="service-card reveal">
       <div class="svc-num">04</div>
-      <span class="svc-icon">⚡</span>
+      <span class="svc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="url(#iconGrad)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span>
       <h3>Automatización de Procesos</h3>
       <p>Eliminamos tareas manuales y repetitivas. Integramos CRM, email, contabilidad y más para que todo fluya de manera automática.</p>
       <div class="svc-pills">
@@ -837,7 +852,7 @@
     </div>
     <div class="service-card reveal">
       <div class="svc-num">05</div>
-      <span class="svc-icon">📊</span>
+      <span class="svc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="url(#iconGrad)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/></svg></span>
       <h3>Análisis & Business Intelligence</h3>
       <p>Dashboards en tiempo real y reportes automatizados para tomar decisiones basadas en datos, no en intuición.</p>
       <div class="svc-pills">
@@ -846,7 +861,7 @@
     </div>
     <div class="service-card reveal">
       <div class="svc-num">06</div>
-      <span class="svc-icon">🔗</span>
+      <span class="svc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="url(#iconGrad)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></span>
       <h3>Integraciones & CRM</h3>
       <p>Conectamos todos tus sistemas. HubSpot, Salesforce, Google Workspace, Airtable — el ecosistema digital perfecto para tu operación.</p>
       <div class="svc-pills">
@@ -892,42 +907,42 @@
 
   <div class="sectors-grid">
     <div class="sector-card reveal">
-      <span class="sector-emoji">🏨</span>
+      <span class="sector-emoji"><svg viewBox="0 0 24 24" fill="none" stroke="url(#iconGrad)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="15" rx="1"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><line x1="8" y1="12" x2="8" y2="12"/><line x1="12" y1="12" x2="12" y2="12"/><line x1="16" y1="12" x2="16" y2="12"/><line x1="8" y1="16" x2="8" y2="16"/><line x1="12" y1="16" x2="12" y2="16"/><line x1="16" y1="16" x2="16" y2="16"/></svg></span>
       <div>
         <h3>Turismo & Hostelería</h3>
         <p>Hoteles, restaurantes y agencias de viaje. Automatizamos reservas, atención al cliente y gestión de reseñas.</p>
       </div>
     </div>
     <div class="sector-card reveal">
-      <span class="sector-emoji">🏗️</span>
+      <span class="sector-emoji"><svg viewBox="0 0 24 24" fill="none" stroke="url(#iconGrad)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></span>
       <div>
         <h3>Construcción & Inmobiliaria</h3>
         <p>Gestión de proyectos, seguimiento de clientes y presentación de propiedades con herramientas modernas.</p>
       </div>
     </div>
     <div class="sector-card reveal">
-      <span class="sector-emoji">🛍️</span>
+      <span class="sector-emoji"><svg viewBox="0 0 24 24" fill="none" stroke="url(#iconGrad)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg></span>
       <div>
         <h3>Comercio Local</h3>
         <p>Tiendas físicas y online que venden más gracias a la automatización del marketing y la atención al cliente.</p>
       </div>
     </div>
     <div class="sector-card reveal">
-      <span class="sector-emoji">⚕️</span>
+      <span class="sector-emoji"><svg viewBox="0 0 24 24" fill="none" stroke="url(#iconGrad)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></span>
       <div>
         <h3>Salud & Bienestar</h3>
         <p>Clínicas y centros de estética con citas automáticas, recordatorios y gestión de pacientes integrada.</p>
       </div>
     </div>
     <div class="sector-card reveal">
-      <span class="sector-emoji">🎓</span>
+      <span class="sector-emoji"><svg viewBox="0 0 24 24" fill="none" stroke="url(#iconGrad)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5-10-5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg></span>
       <div>
         <h3>Formación & Servicios</h3>
         <p>Academias y consultoras con procesos digitalizados y clientes mejor atendidos en menos tiempo.</p>
       </div>
     </div>
     <div class="sector-card reveal">
-      <span class="sector-emoji">🌿</span>
+      <span class="sector-emoji"><svg viewBox="0 0 24 24" fill="none" stroke="url(#iconGrad)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 8C8 10 5.9 16.17 3.82 22c1.64-1.46 3.96-2.35 6.18-2.35 2.62 0 5.24 1.28 6 3.35C18.5 20.5 21 17.5 21 14c0-5-4-6-4-6z"/><path d="M7.6 16.4A8 8 0 0 1 17 8"/></svg></span>
       <div>
         <h3>Agricultura & Alimentación</h3>
         <p>Productores locales y empresas del sector primario que necesitan visibilidad digital y procesos modernos.</p>
@@ -1026,9 +1041,9 @@
     </div>
 
     <div class="contact-row">
-      <div class="contact-chip"><span class="dot">✉</span> hola@isladigital.com</div>
-      <div class="contact-chip"><span class="dot">📍</span> Lanzarote, Islas Canarias</div>
-      <div class="contact-chip"><span class="dot">📱</span> WhatsApp disponible</div>
+      <div class="contact-chip"><span class="dot"><svg viewBox="0 0 24 24" fill="none" stroke="url(#iconGrad)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></span> hola@isladigital.com</div>
+      <div class="contact-chip"><span class="dot"><svg viewBox="0 0 24 24" fill="none" stroke="url(#iconGrad)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></span> Lanzarote, Islas Canarias</div>
+      <div class="contact-chip"><span class="dot"><svg viewBox="0 0 24 24" fill="none" stroke="url(#iconGrad)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></span> WhatsApp disponible</div>
     </div>
   </div>
 </section>
