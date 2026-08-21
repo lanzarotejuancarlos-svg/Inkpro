@@ -131,13 +131,19 @@
   }
 
   /* Preferred path: native CSS scroll-driven animation (no JS, no jank).
-     Range `exit 0% → exit 65%` = fully hidden while the hero fills the
-     viewport, fully revealed once ~65% of it has scrolled past. */
+     The timeline MUST be named on #hero rather than using a bare `view()` on
+     the wrapper: #hero sets `overflow: hidden`, which makes it a scroll
+     container, so `view()` on a descendant would anchor to #hero — which never
+     scrolls — and the animation would sit frozen at 0. Naming it on #hero
+     resolves the timeline against the document scroller instead.
+     Range `exit 0% → exit 65%` = hidden while the hero fills the viewport,
+     fully revealed once ~65% of it has scrolled past. */
   @keyframes lavaReveal { from { opacity: 0; } to { opacity: 1; } }
   @supports (animation-timeline: view()) {
+    #hero { view-timeline-name: --heroView; }
     .hero-video-wrap {
       animation: lavaReveal linear both;
-      animation-timeline: view();
+      animation-timeline: --heroView;
       animation-range: exit 0% exit 65%;
     }
   }
