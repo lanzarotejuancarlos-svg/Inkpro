@@ -73,15 +73,9 @@
     display: flex; align-items: center; gap: .7rem;
     line-height: 0;
   }
-  .nav-logo-mark { height: 30px; width: auto; flex-shrink: 0; }
-  .nav-logo-text {
-    font-family: 'Syne', sans-serif;
-    font-size: 1.05rem;
-    font-weight: 700;
-    color: var(--white);
-    letter-spacing: .01em;
-    line-height: 1;
-  }
+  /* The supplied lockup artwork, used as-is. Sized by height so the mark,
+     wordmark and tagline keep their original proportions. */
+  .nav-logo-img { height: 46px; width: auto; display: block; }
   .nav-links { display: flex; gap: 2.5rem; list-style: none; }
   .nav-links a {
     font-size: .8rem;
@@ -692,20 +686,11 @@
     background: var(--black);
   }
   .footer-logo {
-    font-family: 'Syne', sans-serif;
-    font-size: .95rem;
-    font-weight: 800;
-    color: var(--white);
     text-decoration: none;
-    display: flex; align-items: center; gap: .5rem;
+    display: flex; align-items: center;
+    line-height: 0;
   }
-  .footer-logo .logo-mark-sm { width: 22px; height: 22px; }
-  .footer-logo .brand-name {
-    background: var(--grad);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
+  .footer-logo-img { height: 40px; width: auto; display: block; }
   .footer-links { display: flex; gap: 2rem; list-style: none; }
   .footer-links a {
     font-size: .75rem; color: var(--muted);
@@ -784,22 +769,8 @@
 <!-- ── NAV ── -->
 <nav>
   <a href="#" class="nav-logo">
-    <svg class="nav-logo-mark" viewBox="0 0 100 96" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <defs>
-        <linearGradient id="navGrad" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stop-color="#7c3aed"/>
-          <stop offset="55%" stop-color="#a855f7"/>
-          <stop offset="100%" stop-color="#d946ef"/>
-        </linearGradient>
-      </defs>
-      <!-- apex triangle -->
-      <polygon points="50,2 58,16 42,16" fill="url(#navGrad)"/>
-      <!-- left bar -->
-      <polygon points="5,92 25,92 48,22 28,22" fill="url(#navGrad)"/>
-      <!-- right A body with hollow cutout -->
-      <path fill-rule="evenodd" fill="url(#navGrad)" d="M50,22 L95,92 L27,92 Z M50,54 L78,92 L30,92 Z"/>
-    </svg>
-    <span class="nav-logo-text">Isla Digital</span>
+    <img src="logo-isladigital.png" alt="Isla Digital — IA, Automatización, App, Web"
+         class="nav-logo-img" width="926" height="240">
   </a>
   <ul class="nav-links">
     <li><a href="#servicios">Servicios</a></li>
@@ -1009,7 +980,7 @@
       </div>
     </div>
     <div class="sector-card reveal">
-      <span class="sector-emoji"><svg viewBox="0 0 24 24" fill="none" stroke="url(#iconGrad)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5.5 4.2v3.1c0 6.3 5.1 11.4 11.4 11.4h2.9"/><path d="M3.6 3.4a1.4 1.4 0 0 1 2.5.9c-.2 5.9 4.6 10.8 10.5 10.8a1.4 1.4 0 0 1 1.2 2.1c-1.7 2.8-4.8 4.5-8.1 4.3C4.9 21.2.9 16.4 1.6 11.2c.3-2.6 1-5.7 2-7.8z"/></svg></span>
+      <span class="sector-emoji"><svg viewBox="0 0 24 24" fill="none" stroke="url(#iconGrad)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15.1 4.4 15.8 2.3 17.9 2.9 17.5 5"/><path d="M17.9 5.4c3 3.5 3.3 8.5.7 12.1-1.2 1.7-2.9 2.9-4.8 3.6"/><path d="M16.2 4.1c3.5 3.4 4.1 8.6 1.5 12.4-2.6 3.8-8.2 5.2-12.6 3.6L3.1 18.3c4.2 1.2 8.8.2 11.6-2.8 2.8-3 3.2-7.7 1.5-11.4Z"/></svg></span>
       <div>
         <h3>Agricultura & Alimentación</h3>
         <p>Productores locales y empresas del sector primario que necesitan visibilidad digital y procesos modernos.</p>
@@ -1046,15 +1017,10 @@
         <!-- Center glow -->
         <circle cx="210" cy="210" r="80" fill="url(#glowGrad2)"/>
 
-        <!-- Isla Digital logo mark centered -->
-        <!-- Outer triangle -->
-        <polygon points="210,138 264,248 156,248" stroke="url(#lineGrad2)" stroke-width="9" fill="none" stroke-linejoin="miter" stroke-linecap="square"/>
-        <!-- Inner triangle (hollow A) -->
-        <polyline points="210,176 248,248 172,248" stroke="url(#lineGrad2)" stroke-width="8" fill="none" stroke-linejoin="miter" stroke-linecap="square"/>
-        <!-- Diagonal slash I -->
-        <line x1="156" y1="248" x2="210" y2="148" stroke="url(#lineGrad2)" stroke-width="9" stroke-linecap="butt"/>
-        <!-- Inverted triangle apex -->
-        <polygon points="210,132 217,145 203,145" fill="url(#lineGrad2)"/>
+        <!-- The supplied logo mark itself, placed as artwork rather than
+             redrawn as vectors, so it matches the brand file exactly. -->
+        <image href="isotipo-isladigital.png" x="123" y="140" width="174" height="141"
+               preserveAspectRatio="xMidYMid meet"/>
 
         <!-- Orbiting dots -->
         <circle cx="210" cy="45" r="5" fill="#a855f7" style="transform-origin:210px 210px; animation: spin 8s linear infinite"/>
@@ -1118,20 +1084,8 @@
 <!-- ── FOOTER ── -->
 <footer>
   <a href="#" class="footer-logo">
-    <svg class="logo-mark-sm" viewBox="0 0 100 96" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <linearGradient id="footGrad" x1="5" y1="92" x2="85" y2="8" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stop-color="#e040fb"/>
-          <stop offset="55%" stop-color="#9333ea"/>
-          <stop offset="100%" stop-color="#7c3aed"/>
-        </linearGradient>
-      </defs>
-      <polygon points="50,2 58,16 42,16" fill="url(#footGrad)"/>
-      <polygon points="5,92 25,92 48,22 28,22" fill="url(#footGrad)"/>
-      <path fill-rule="evenodd" fill="url(#footGrad)"
-        d="M50,22 L95,92 L27,92 Z M50,54 L78,92 L30,92 Z"/>
-    </svg>
-    <span class="brand-name">Isla Digital</span>
+    <img src="logo-isladigital.png" alt="Isla Digital — IA, Automatización, App, Web"
+         class="footer-logo-img">
   </a>
   <ul class="footer-links">
     <li><a href="#servicios">Servicios</a></li>
@@ -1139,7 +1093,7 @@
     <li><a href="#nosotros">Nosotros</a></li>
     <li><a href="#contacto">Contacto</a></li>
   </ul>
-  <div class="footer-copy">© 2025 Isla Digital · Canarias, Islas Canarias</div>
+  <div class="footer-copy">Isla Digital · 2025 · Lanzarote, Islas Canarias</div>
 </footer>
 
 <script>
