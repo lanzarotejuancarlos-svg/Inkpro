@@ -588,9 +588,13 @@
     border-top: 1px solid var(--border);
   }
   .stat-val {
-    font-family: 'Syne', sans-serif;
-    font-size: 2.2rem;
-    font-weight: 800;
+    /* DM Sans rather than Syne: same reason as the process step numbers —
+       Syne is a display face whose figures read poorly at a glance. */
+    font-family: 'DM Sans', sans-serif;
+    font-size: 2.3rem;
+    font-weight: 700;
+    letter-spacing: -.02em;
+    font-variant-numeric: tabular-nums;
     background: var(--grad);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
