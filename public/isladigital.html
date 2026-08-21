@@ -116,33 +116,52 @@
     overflow: hidden;
   }
 
-  /* ── HERO VIDEO ── */
+  /* ── HERO VIDEO (scroll-linked reveal) ── */
   .hero-video-wrap {
     position: absolute; inset: 0; z-index: 0;
     overflow: hidden;
-    opacity: 0;
-    transition: opacity 2s ease;
+    background: var(--black);   /* static fallback while video loads */
+    opacity: 0;                 /* 0 at top of page, driven to 1 on scroll */
     will-change: opacity;
   }
-  .hero-video-wrap.is-playing { opacity: 1; }
   .hero-video-wrap video {
     width: 100%; height: 100%;
     object-fit: cover;
     display: block;
   }
+
+  /* Preferred path: native CSS scroll-driven animation (no JS, no jank).
+     Range `exit 0% → exit 65%` = fully hidden while the hero fills the
+     viewport, fully revealed once ~65% of it has scrolled past. */
+  @keyframes lavaReveal { from { opacity: 0; } to { opacity: 1; } }
+  @supports (animation-timeline: view()) {
+    .hero-video-wrap {
+      animation: lavaReveal linear both;
+      animation-timeline: view();
+      animation-range: exit 0% exit 65%;
+    }
+  }
+
+  /* Overlay sits ABOVE the video at all times so text contrast never drops,
+     even at full lava opacity. */
   .hero-video-overlay {
     position: absolute; inset: 0; z-index: 1;
-    background: rgba(0,0,0,.6);
+    background:
+      linear-gradient(90deg, rgba(6,6,8,.72) 0%, rgba(6,6,8,.42) 55%, rgba(6,6,8,.55) 100%),
+      rgba(0,0,0,.55);
     pointer-events: none;
   }
+
   .hero-glow    { z-index: 2; }
   .hero-grid    { z-index: 2; }
   .orb          { z-index: 2; }
   .hero-content { position: relative; z-index: 3; }
   .hero-scroll  { z-index: 3; }
 
+  /* Reduced motion: no video, no scroll effect — original static dark hero. */
   @media (prefers-reduced-motion: reduce) {
-    .hero-video-wrap { display: none; }
+    .hero-video-wrap,
+    .hero-video-overlay { display: none; }
   }
 
   .hero-glow {
@@ -764,10 +783,9 @@
 <section id="hero">
   <!-- Lava video — scroll-linked opacity, lazy-loaded -->
   <div class="hero-video-wrap" id="heroVideoWrap">
-    <video id="heroVideo" autoplay loop muted playsinline preload="auto"
-           aria-hidden="true">
-      <source src="/lava.mp4" type="video/mp4">
-    </video>
+    <video id="heroVideo" loop muted playsinline preload="none"
+           aria-hidden="true" tabindex="-1"
+           data-src="lava.mp4"></video>
   </div>
   <div class="hero-video-overlay"></div>
 
@@ -1137,25 +1155,57 @@
     c.style.transitionDelay = (i * 0.08) + 's';
   });
 
-  // ── HERO LAVA VIDEO ──
+  // ── HERO LAVA VIDEO: lazy-load + scroll-linked reveal ──
   (function () {
-    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (reducedMotion) return;
+    // prefers-reduced-motion → keep the original static dark hero, load nothing.
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
     const wrap  = document.getElementById('heroVideoWrap');
     const video = document.getElementById('heroVideo');
-    if (!wrap || !video) return;
+    const hero  = document.getElementById('hero');
+    if (!wrap || !video || !hero) return;
 
-    // Fade in as soon as the video can play
-    video.addEventListener('canplay', () => {
-      wrap.classList.add('is-playing');
-    }, { once: true });
+    // ── 1. Lazy-load: attach the source only when the hero nears the viewport,
+    //       so the video never competes with LCP on a cold load.
+    let loaded = false;
+    function loadVideo() {
+      if (loaded) return;
+      loaded = true;
+      video.src = video.dataset.src;
+      video.load();
+      video.play().catch(() => {});   // autoplay may be refused; harmless
+    }
 
-    // Fallback: show after 3 s even if canplay never fires
-    setTimeout(() => wrap.classList.add('is-playing'), 3000);
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting) { loadVideo(); io.disconnect(); }
+      }, { rootMargin: '300px' });
+      io.observe(hero);
+    } else {
+      loadVideo();
+    }
 
-    video.load();
-    video.play().catch(() => {});
+    // ── 2. Reveal. If the browser has CSS scroll-driven animations the
+    //       stylesheet already handles opacity — don't fight it from JS.
+    const nativeTimeline =
+      window.CSS && CSS.supports && CSS.supports('animation-timeline', 'view()');
+    if (nativeTimeline) return;
+
+    // JS fallback: rAF-throttled, passive listener, single write per frame.
+    let rafId = null;
+    function updateOpacity() {
+      rafId = null;
+      const scrolled  = Math.max(0, -hero.getBoundingClientRect().top);
+      const maxScroll = hero.offsetHeight * 0.65;
+      wrap.style.opacity = Math.min(1, scrolled / maxScroll).toFixed(3);
+    }
+    function onScroll() {
+      if (rafId === null) rafId = requestAnimationFrame(updateOpacity);
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll, { passive: true });
+    updateOpacity();   // in case the page restores mid-scroll
   })();
 </script>
 </body>
