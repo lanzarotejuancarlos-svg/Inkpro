@@ -506,16 +506,20 @@
   }
   .step { text-align: center; }
   .step-circle {
-    width: 56px; height: 56px;
+    width: 68px; height: 68px;
     border-radius: 50%;
     background: var(--grad);
     display: flex; align-items: center; justify-content: center;
     margin: 0 auto 1.5rem;
-    font-family: 'Syne', sans-serif;
-    font-size: .75rem;
-    font-weight: 800;
+    /* DM Sans, not Syne: Syne is a display face whose numerals are hard to
+       read small, and the old .05em tracking pulled the two digits apart. */
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1.45rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -.01em;
+    line-height: 1;
     color: var(--white);
-    letter-spacing: .05em;
     box-shadow: 0 0 30px rgba(168,85,247,.4);
   }
   .step h3 {
@@ -759,7 +763,14 @@
 <!-- shared SVG gradient for all icons -->
 <svg width="0" height="0" style="position:absolute;overflow:hidden" aria-hidden="true">
   <defs>
-    <linearGradient id="iconGrad" x1="0" y1="0" x2="1" y2="1">
+    <!-- userSpaceOnUse, NOT the default objectBoundingBox: a stroked <line>
+         that is exactly horizontal or vertical has a zero-height/width bbox,
+         and per spec a bbox-relative gradient cannot resolve against it, so
+         the element silently does not paint at all. That is what made the
+         chart icon vanish entirely and hollowed out the globe and the phone.
+         All icons share viewBox="0 0 24 24", so 0,0 -> 24,24 spans them. -->
+    <linearGradient id="iconGrad" gradientUnits="userSpaceOnUse"
+                    x1="0" y1="0" x2="24" y2="24">
       <stop offset="0%" stop-color="#7c3aed"/>
       <stop offset="55%" stop-color="#a855f7"/>
       <stop offset="100%" stop-color="#d946ef"/>
@@ -872,7 +883,7 @@
   <div class="services-grid">
     <div class="service-card reveal">
       <div class="svc-num">01</div>
-      <span class="svc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="url(#iconGrad)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span>
+      <span class="svc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="url(#iconGrad)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="18" rx="2"/><path d="M2 8h20"/><circle cx="5.2" cy="5.5" r=".85" fill="url(#iconGrad)" stroke="none"/><circle cx="8" cy="5.5" r=".85" fill="url(#iconGrad)" stroke="none"/><path d="M9.5 12.5 7 15l2.5 2.5"/><path d="M14.5 12.5 17 15l-2.5 2.5"/></svg></span>
       <h3>Diseño & Desarrollo Web</h3>
       <p>Webs rápidas, modernas y optimizadas para SEO. Landing pages, e-commerce y portales con foco en convertir visitas en clientes reales.</p>
       <div class="svc-pills">
@@ -881,7 +892,7 @@
     </div>
     <div class="service-card reveal">
       <div class="svc-num">02</div>
-      <span class="svc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="url(#iconGrad)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg></span>
+      <span class="svc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="url(#iconGrad)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13V4a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h6"/><path d="M9 5.2h2"/><path d="M17.6 15.1v1.05m0 4.7v1.05m3.03-5.05-.9.53m-4.26 2.44-.9.53m0-4.03.9.53m4.26 2.44.9.53"/><circle cx="17.6" cy="18.5" r="2.15"/></svg></span>
       <h3>Apps Móviles</h3>
       <p>Aplicaciones nativas y multiplataforma para iOS y Android. Desde el diseño de UX hasta la publicación en las tiendas de apps.</p>
       <div class="svc-pills">
@@ -908,7 +919,7 @@
     </div>
     <div class="service-card reveal">
       <div class="svc-num">05</div>
-      <span class="svc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="url(#iconGrad)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/></svg></span>
+      <span class="svc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="url(#iconGrad)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v16.5A1.5 1.5 0 0 0 4.5 21H21"/><rect x="7" y="12" width="3.1" height="5.5" rx=".7"/><rect x="12.9" y="8.5" width="3.1" height="9" rx=".7"/><rect x="16.8" y="5" width="3.1" height="12.5" rx=".7"/></svg></span>
       <h3>Análisis & Business Intelligence</h3>
       <p>Dashboards en tiempo real y reportes automatizados para tomar decisiones basadas en datos, no en intuición.</p>
       <div class="svc-pills">
@@ -998,7 +1009,7 @@
       </div>
     </div>
     <div class="sector-card reveal">
-      <span class="sector-emoji"><svg viewBox="0 0 24 24" fill="none" stroke="url(#iconGrad)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 8C8 10 5.9 16.17 3.82 22c1.64-1.46 3.96-2.35 6.18-2.35 2.62 0 5.24 1.28 6 3.35C18.5 20.5 21 17.5 21 14c0-5-4-6-4-6z"/><path d="M7.6 16.4A8 8 0 0 1 17 8"/></svg></span>
+      <span class="sector-emoji"><svg viewBox="0 0 24 24" fill="none" stroke="url(#iconGrad)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5.5 4.2v3.1c0 6.3 5.1 11.4 11.4 11.4h2.9"/><path d="M3.6 3.4a1.4 1.4 0 0 1 2.5.9c-.2 5.9 4.6 10.8 10.5 10.8a1.4 1.4 0 0 1 1.2 2.1c-1.7 2.8-4.8 4.5-8.1 4.3C4.9 21.2.9 16.4 1.6 11.2c.3-2.6 1-5.7 2-7.8z"/></svg></span>
       <div>
         <h3>Agricultura & Alimentación</h3>
         <p>Productores locales y empresas del sector primario que necesitan visibilidad digital y procesos modernos.</p>
