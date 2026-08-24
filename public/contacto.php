@@ -11,7 +11,13 @@ declare(strict_types=1);
  */
 
 const DESTINATARIO = 'hola@isladigital.net';
-const REMITENTE    = 'no-reply@isladigital.net';
+
+/**
+ * MUST be a mailbox that really exists on the domain. Sending as an address
+ * that was never created (no-reply@, and friends) scores badly with spam
+ * filters and leaves the Return-Path pointing nowhere, so bounces vanish.
+ */
+const REMITENTE    = 'hola@isladigital.net';
 const MAX_MENSAJE  = 5000;
 
 /** True when the browser asked for JSON (our fetch call does). */
@@ -159,12 +165,20 @@ $cuerpo = implode("\n", [
     'IP:    ' . ($_SERVER['REMOTE_ADDR'] ?? 'desconocida'),
 ]);
 
+// A missing Message-ID or Date is itself a spam signal — well-behaved mailers
+// always set both, so their absence marks the message as machine-generated.
+$dominio   = substr(strrchr(REMITENTE, '@') ?: '@localhost', 1);
+$messageId = sprintf('<%s.%s@%s>', date('YmdHis'), bin2hex(random_bytes(8)), $dominio);
+
 $cabeceras = implode("\r\n", [
     'From: Web Isla Digital <' . REMITENTE . '>',
     'Reply-To: ' . $nombre . ' <' . $email . '>',
+    'Date: ' . date('r'),
+    'Message-ID: ' . $messageId,
     'MIME-Version: 1.0',
     'Content-Type: text/plain; charset=UTF-8',
     'Content-Transfer-Encoding: 8bit',
+    'Auto-Submitted: auto-generated',
 ]);
 
 // RFC 2047 so accented subjects survive every mail client
