@@ -633,66 +633,173 @@
   #contacto h2 { max-width: 700px; margin: 1.5rem auto 1rem; text-align: center; }
   #contacto p { color: var(--muted); margin-bottom: 3rem; font-size: 1.05rem; }
 
-  .cta-form {
-    max-width: 620px;
-    margin: 0 auto 2.5rem;
-    text-align: left;
-  }
-  .cta-grid {
+  /* ── CONTACT FORM ─────────────────────────────────────────────────── */
+  .contact-layout {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
+    grid-template-columns: 0.85fr 1.3fr;
+    max-width: 1000px;
+    margin: 3rem auto 0;
+    text-align: left;
+    border: 1px solid var(--border);
+    background: rgba(13,11,20,.55);
+    backdrop-filter: blur(10px);
   }
-  .field { display: flex; flex-direction: column; gap: .4rem; }
-  .field-wide { grid-column: 1 / -1; }
-  .field > span {
-    font-size: .7rem; font-weight: 500;
-    letter-spacing: .08em; text-transform: uppercase;
+  .contact-side {
+    padding: 2.6rem 2.2rem;
+    border-right: 1px solid var(--border);
+    display: flex; flex-direction: column; justify-content: space-between;
+    gap: 2.5rem;
+  }
+  .contact-side h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.35rem; font-weight: 700;
+    color: var(--white);
+    margin-bottom: .8rem;
+  }
+  .contact-side > div > p {
+    font-size: .9rem; font-weight: 300; line-height: 1.7;
     color: var(--muted);
   }
-  .field input, .field textarea {
+  .side-stats { display: flex; gap: 2.2rem; margin-top: 2rem; }
+  .side-stats b {
+    display: block;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1.7rem; font-weight: 700;
+    font-variant-numeric: tabular-nums; letter-spacing: -.02em;
+    background: var(--grad);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1.1;
+  }
+  .side-stats span {
+    font-size: .68rem; font-weight: 500;
+    letter-spacing: .1em; text-transform: uppercase;
+    color: var(--muted);
+  }
+  .side-lines { display: flex; flex-direction: column; }
+  .contact-line {
+    display: flex; align-items: center; gap: .6rem;
+    font-size: .84rem; color: var(--muted);
+    padding: .85rem 0;
+    border-top: 1px solid var(--border);
+  }
+  .side-lines .contact-line:first-child { border-top: none; }
+  .contact-line .dot { display: flex; width: 15px; height: 15px; flex-shrink: 0; }
+  .contact-line .dot svg { width: 100%; height: 100%; }
+  .contact-line a { color: var(--muted); text-decoration: none; transition: color .2s; }
+  .contact-line a:hover { color: var(--lavender); }
+
+  .contact-form-side { padding: 2.6rem 2.2rem; }
+  #ctaForm { display: flex; flex-direction: column; gap: 1.4rem; }
+
+  .cta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
+  .field { display: flex; flex-direction: column; gap: .45rem; }
+  .field-wide { grid-column: 1 / -1; }
+  .field > span {
+    font-family: 'Syne', sans-serif;
+    font-size: .66rem; font-weight: 700;
+    letter-spacing: .12em; text-transform: uppercase;
+    color: var(--violet3);
+  }
+  .field > span i {
+    font-style: normal; font-weight: 400;
+    text-transform: none; letter-spacing: .02em;
+    color: var(--muted); opacity: .8;
+  }
+  .field input, .field textarea, .field select {
     font-family: 'DM Sans', sans-serif;
     font-size: .95rem;
     color: var(--white);
-    background: rgba(13,11,20,.8);
-    border: 1px solid rgba(217,70,239,.28);
-    border-radius: 3px;
-    padding: .7rem .9rem;
-    outline: none;
-    transition: border-color .2s, box-shadow .2s;
-    width: 100%;
+    background: transparent;
+    border: 0; border-bottom: 1px solid var(--border);
+    border-radius: 0;
+    padding: .55rem .1rem;
+    outline: none; width: 100%;
+    transition: border-color .2s;
+    appearance: none; -webkit-appearance: none;
   }
-  .field textarea { resize: vertical; min-height: 110px; }
-  .field input:focus, .field textarea:focus {
-    border-color: var(--pink);
-    box-shadow: 0 0 0 3px rgba(217,70,239,.15);
+  .field textarea { resize: vertical; min-height: 100px; line-height: 1.6; }
+  .field select { cursor: pointer; }
+  .field select option { background: var(--deep); color: var(--white); }
+  .field input:focus, .field textarea:focus, .field select:focus {
+    border-bottom-color: var(--pink);
   }
-  .field input:user-invalid, .field textarea:user-invalid { border-color: #f87171; }
+  .field input:user-invalid, .field textarea:user-invalid,
+  .field select:user-invalid { border-bottom-color: #f87171; }
 
-  /* Honeypot: kept in the layout but off-screen, since bots increasingly
-     skip display:none fields. */
+  .select-wrap { position: relative; }
+  .select-wrap::after {
+    content: ''; position: absolute; right: 4px; top: 12px;
+    width: 7px; height: 7px;
+    border-right: 1.5px solid var(--violet3);
+    border-bottom: 1.5px solid var(--violet3);
+    transform: rotate(45deg);
+    pointer-events: none;
+  }
+
+  .chip-field { border: 0; padding: 0; margin: 0; }
+  .chip-field legend {
+    font-family: 'Syne', sans-serif;
+    font-size: .66rem; font-weight: 700;
+    letter-spacing: .12em; text-transform: uppercase;
+    color: var(--violet3);
+    padding: 0; margin-bottom: .7rem;
+  }
+  .chip-field legend i {
+    font-style: normal; font-weight: 400;
+    text-transform: none; letter-spacing: .02em;
+    color: var(--muted); opacity: .8;
+  }
+  .chip-group { display: flex; flex-wrap: wrap; gap: .5rem; }
+  /* The native control stays focusable for keyboard and screen readers; only
+     its <span> is styled, driven by :checked and :focus-visible. */
+  .pick input { position: absolute; opacity: 0; width: 0; height: 0; }
+  .pick span {
+    display: inline-block;
+    font-size: .76rem; font-weight: 400;
+    color: var(--muted);
+    padding: .45rem .85rem;
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    cursor: pointer;
+    user-select: none;
+    transition: border-color .2s, color .2s, background .2s;
+  }
+  .pick span:hover { border-color: rgba(217,70,239,.45); color: var(--white); }
+  .pick input:checked + span {
+    border-color: var(--pink);
+    color: var(--white);
+    background: rgba(217,70,239,.16);
+  }
+  .pick input:focus-visible + span { outline: 2px solid var(--violet3); outline-offset: 2px; }
+
+  .privacy {
+    display: flex; align-items: flex-start; gap: .6rem;
+    font-size: .8rem; line-height: 1.55; color: var(--muted);
+  }
+  .privacy input { margin-top: .2rem; accent-color: var(--pink); flex-shrink: 0; }
+  .privacy a { color: var(--lavender); }
+
   .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
 
-  .cta-form > button {
-    margin-top: 1.2rem;
-    width: 100%;
+  #ctaSubmit {
     font-family: 'Syne', sans-serif;
-    font-size: .8rem; font-weight: 700;
-    letter-spacing: .12em; text-transform: uppercase;
+    font-size: .78rem; font-weight: 700;
+    letter-spacing: .14em; text-transform: uppercase;
     color: var(--white);
     background: var(--grad);
     border: 0; border-radius: 3px;
-    padding: .95rem 1.5rem;
+    padding: 1rem 1.5rem;
     cursor: pointer;
     transition: opacity .2s, transform .2s;
   }
-  .cta-form > button:hover { opacity: .9; transform: translateY(-1px); }
-  .cta-form > button[disabled] { opacity: .55; cursor: progress; transform: none; }
+  #ctaSubmit:hover { opacity: .9; transform: translateY(-1px); }
+  #ctaSubmit[disabled] { opacity: .55; cursor: progress; transform: none; }
 
   .cta-status {
-    margin-top: 1rem; padding: .8rem 1rem;
-    font-size: .88rem; line-height: 1.5;
-    border-radius: 3px; text-align: center;
+    padding: .85rem 1rem;
+    font-size: .86rem; line-height: 1.55;
+    border-radius: 3px;
   }
   .cta-status[hidden] { display: none; }
   .cta-status.ok  { color: #86efac; background: rgba(34,197,94,.1);
@@ -700,8 +807,13 @@
   .cta-status.err { color: #fca5a5; background: rgba(248,113,113,.1);
                     border: 1px solid rgba(248,113,113,.3); }
 
-  @media (max-width: 620px) {
+  @media (max-width: 860px) {
+    .contact-layout { grid-template-columns: 1fr; }
+    .contact-side { border-right: none; border-bottom: 1px solid var(--border); }
+  }
+  @media (max-width: 560px) {
     .cta-grid { grid-template-columns: 1fr; }
+    .contact-side, .contact-form-side { padding: 2rem 1.4rem; }
   }
   .cta-form input {
     flex: 1;
@@ -1164,45 +1276,122 @@
   <div class="cta-inner">
     <div class="section-eyebrow" style="justify-content:center">Contacto</div>
     <h2>¿Listo para el <span class="grad-text">siguiente nivel?</span></h2>
-    <p>Cuéntanos tu mayor problema. Tenemos la solución.</p>
+    <p>Rellena el formulario y te respondemos en menos de 48 horas con una propuesta a medida.</p>
 
-    <form class="cta-form" id="ctaForm" action="contacto.php" method="post" novalidate>
-      <div class="cta-grid">
-        <label class="field">
-          <span>Nombre *</span>
-          <input type="text" name="nombre" required maxlength="100" autocomplete="name">
-        </label>
-        <label class="field">
-          <span>Email *</span>
-          <input type="email" name="email" required maxlength="190" autocomplete="email">
-        </label>
-        <label class="field">
-          <span>Teléfono</span>
-          <input type="tel" name="telefono" maxlength="40" autocomplete="tel">
-        </label>
-        <label class="field field-wide">
-          <span>¿Qué necesitas? *</span>
-          <textarea name="mensaje" required maxlength="5000" rows="4"
-                    placeholder="Cuéntanos tu mayor problema..."></textarea>
-        </label>
+    <div class="contact-layout">
+      <aside class="contact-side">
+        <div>
+          <h3>Hablemos</h3>
+          <p>Ya sea una web, un asistente de IA o automatizar procesos internos:
+             nos adaptamos a tu equipo, tu presupuesto y tus objetivos reales.</p>
+
+          <div class="side-stats">
+            <div><b>48h</b><span>Respuesta</span></div>
+            <div><b>100%</b><span>A medida</span></div>
+          </div>
+        </div>
+
+        <div class="side-lines">
+          <div class="contact-line">
+            <span class="dot"><svg viewBox="0 0 24 24" fill="none" stroke="url(#iconGrad)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></span>
+            <a href="mailto:hola@isladigital.net">hola@isladigital.net</a>
+            <button type="button" class="chip-copy" data-copy="hola@isladigital.net" title="Copiar dirección" aria-label="Copiar dirección"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>
+          </div>
+          <div class="contact-line">
+            <span class="dot"><svg viewBox="0 0 24 24" fill="none" stroke="url(#iconGrad)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></span>
+            <span>Lanzarote, Islas Canarias</span>
+          </div>
+          <div class="contact-line">
+            <span class="dot"><svg viewBox="0 0 24 24" fill="none" stroke="url(#iconGrad)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></span>
+            <span>WhatsApp disponible</span>
+          </div>
+        </div>
+      </aside>
+
+      <div class="contact-form-side">
+        <form id="ctaForm" action="contacto.php" method="post" novalidate>
+
+          <div class="cta-grid">
+            <label class="field">
+              <span>Nombre *</span>
+              <input type="text" name="nombre" required maxlength="100" autocomplete="name">
+            </label>
+            <label class="field">
+              <span>Empresa <i>(opcional)</i></span>
+              <input type="text" name="empresa" maxlength="120" autocomplete="organization">
+            </label>
+            <label class="field">
+              <span>Email *</span>
+              <input type="email" name="email" required maxlength="190" autocomplete="email">
+            </label>
+            <label class="field">
+              <span>Teléfono / WhatsApp <i>(opcional)</i></span>
+              <input type="tel" name="telefono" maxlength="40" autocomplete="tel">
+            </label>
+            <label class="field field-wide">
+              <span>Sector *</span>
+              <div class="select-wrap">
+                <select name="sector" required>
+                  <option value="" disabled selected>Selecciona tu sector</option>
+                  <option>Turismo &amp; Hostelería</option>
+                  <option>Construcción &amp; Inmobiliaria</option>
+                  <option>Comercio Local</option>
+                  <option>Salud &amp; Bienestar</option>
+                  <option>Formación &amp; Servicios</option>
+                  <option>Agricultura &amp; Alimentación</option>
+                  <option>Otro</option>
+                </select>
+              </div>
+            </label>
+          </div>
+
+          <fieldset class="chip-field">
+            <legend>¿Qué necesitas? <i>(elige una o varias)</i></legend>
+            <div class="chip-group">
+              <label class="pick"><input type="checkbox" name="servicios[]" value="Diseño &amp; Desarrollo Web"><span>Diseño Web</span></label>
+              <label class="pick"><input type="checkbox" name="servicios[]" value="Apps Móviles"><span>Apps Móviles</span></label>
+              <label class="pick"><input type="checkbox" name="servicios[]" value="Asistentes IA &amp; Chatbots"><span>IA &amp; Chatbots</span></label>
+              <label class="pick"><input type="checkbox" name="servicios[]" value="Automatización de Procesos"><span>Automatización</span></label>
+              <label class="pick"><input type="checkbox" name="servicios[]" value="Análisis &amp; Business Intelligence"><span>Business Intelligence</span></label>
+              <label class="pick"><input type="checkbox" name="servicios[]" value="Integraciones &amp; CRM"><span>Integraciones &amp; CRM</span></label>
+            </div>
+          </fieldset>
+
+          <fieldset class="chip-field">
+            <legend>Presupuesto orientativo <i>(opcional)</i></legend>
+            <div class="chip-group">
+              <label class="pick"><input type="radio" name="presupuesto" value="Menos de 300 €"><span>Menos de 300 €</span></label>
+              <label class="pick"><input type="radio" name="presupuesto" value="300 € - 500 €"><span>300 € – 500 €</span></label>
+              <label class="pick"><input type="radio" name="presupuesto" value="500 € - 1.000 €"><span>500 € – 1.000 €</span></label>
+              <label class="pick"><input type="radio" name="presupuesto" value="1.000 € - 3.000 €"><span>1.000 € – 3.000 €</span></label>
+              <label class="pick"><input type="radio" name="presupuesto" value="Más de 3.000 €"><span>Más de 3.000 €</span></label>
+              <label class="pick"><input type="radio" name="presupuesto" value="Aún no lo sé"><span>Aún no lo sé</span></label>
+            </div>
+          </fieldset>
+
+          <label class="field">
+            <span>Tu mayor problema *</span>
+            <textarea name="mensaje" required maxlength="5000" rows="4"
+                      placeholder="Cuéntanos qué te trae por aquí..."></textarea>
+          </label>
+
+          <label class="privacy">
+            <input type="checkbox" name="privacidad" required>
+            <span>He leído y acepto la <a href="privacidad.html">política de privacidad</a> de Isla Digital.</span>
+          </label>
+
+          <!-- Honeypot: hidden from people, filled by bots. Not display:none,
+               which some bots detect; pushed off-screen and out of the tab order. -->
+          <div class="hp" aria-hidden="true">
+            <label>No rellenar
+              <input type="text" name="web" tabindex="-1" autocomplete="off">
+            </label>
+          </div>
+
+          <button type="submit" id="ctaSubmit">Enviar mensaje →</button>
+          <p class="cta-status" id="ctaStatus" role="status" aria-live="polite" hidden></p>
+        </form>
       </div>
-
-      <!-- Honeypot: hidden from people, filled by bots. Not display:none,
-           which some bots detect; pushed off-screen and out of the tab order. -->
-      <div class="hp" aria-hidden="true">
-        <label>No rellenar
-          <input type="text" name="web" tabindex="-1" autocomplete="off">
-        </label>
-      </div>
-
-      <button type="submit" id="ctaSubmit">Hablemos →</button>
-      <p class="cta-status" id="ctaStatus" role="status" aria-live="polite" hidden></p>
-    </form>
-
-    <div class="contact-row">
-      <div class="contact-chip"><span class="dot"><svg viewBox="0 0 24 24" fill="none" stroke="url(#iconGrad)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></span><a href="mailto:hola@isladigital.net">hola@isladigital.net</a><button type="button" class="chip-copy" data-copy="hola@isladigital.net" title="Copiar dirección" aria-label="Copiar dirección"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></div>
-      <div class="contact-chip"><span class="dot"><svg viewBox="0 0 24 24" fill="none" stroke="url(#iconGrad)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></span> Lanzarote, Islas Canarias</div>
-      <div class="contact-chip"><span class="dot"><svg viewBox="0 0 24 24" fill="none" stroke="url(#iconGrad)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></span> WhatsApp disponible</div>
     </div>
   </div>
 </section>

@@ -72,12 +72,51 @@ if (trim((string) ($_POST['web'] ?? '')) !== '') {
 
 // ── 3. Read and validate ──────────────────────────────────────────────────
 $nombre   = unaLinea((string) ($_POST['nombre']   ?? ''));
+$empresa  = unaLinea((string) ($_POST['empresa']  ?? ''));
 $email    = unaLinea((string) ($_POST['email']    ?? ''));
 $telefono = unaLinea((string) ($_POST['telefono'] ?? ''));
+$sector   = unaLinea((string) ($_POST['sector']   ?? ''));
+$presu    = unaLinea((string) ($_POST['presupuesto'] ?? ''));
 $mensaje  = trim((string) ($_POST['mensaje']  ?? ''));
+
+// Checkbox group. Never trust the posted labels: keep only values we offer,
+// so the mail body cannot be stuffed with arbitrary text.
+const SERVICIOS_VALIDOS = [
+    'Diseño & Desarrollo Web',
+    'Apps Móviles',
+    'Asistentes IA & Chatbots',
+    'Automatización de Procesos',
+    'Análisis & Business Intelligence',
+    'Integraciones & CRM',
+];
+const SECTORES_VALIDOS = [
+    'Turismo & Hostelería',
+    'Construcción & Inmobiliaria',
+    'Comercio Local',
+    'Salud & Bienestar',
+    'Formación & Servicios',
+    'Agricultura & Alimentación',
+    'Otro',
+];
+const PRESUPUESTOS_VALIDOS = [
+    'Menos de 300 €', '300 € - 500 €', '500 € - 1.000 €',
+    '1.000 € - 3.000 €', 'Más de 3.000 €', 'Aún no lo sé',
+];
+
+$serviciosCrudo = $_POST['servicios'] ?? [];
+if (!is_array($serviciosCrudo)) {
+    $serviciosCrudo = [$serviciosCrudo];
+}
+$servicios = array_values(array_intersect(
+    array_map(static fn($v): string => unaLinea((string) $v), $serviciosCrudo),
+    SERVICIOS_VALIDOS
+));
 
 if ($nombre === '' || mb_strlen($nombre) > 100) {
     responder(422, false, 'Indica tu nombre.');
+}
+if (mb_strlen($empresa) > 120) {
+    responder(422, false, 'El nombre de la empresa es demasiado largo.');
 }
 if (!filter_var($email, FILTER_VALIDATE_EMAIL) || mb_strlen($email) > 190) {
     responder(422, false, 'Esa dirección de email no parece válida.');
@@ -85,22 +124,37 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL) || mb_strlen($email) > 190) {
 if (mb_strlen($telefono) > 40) {
     responder(422, false, 'El teléfono es demasiado largo.');
 }
+if (!in_array($sector, SECTORES_VALIDOS, true)) {
+    responder(422, false, 'Selecciona un sector de la lista.');
+}
+if ($presu !== '' && !in_array($presu, PRESUPUESTOS_VALIDOS, true)) {
+    responder(422, false, 'Ese presupuesto no es una de las opciones.');
+}
 if ($mensaje === '' || mb_strlen($mensaje) > MAX_MENSAJE) {
     responder(422, false, 'Escribe tu consulta (máximo ' . MAX_MENSAJE . ' caracteres).');
+}
+// Consent is required by the RGPD before we may process the enquiry at all.
+if (($_POST['privacidad'] ?? '') === '') {
+    responder(422, false, 'Debes aceptar la política de privacidad.');
 }
 
 // ── 4. Compose ────────────────────────────────────────────────────────────
 $asunto = 'Nueva consulta desde isladigital.net';
 $cuerpo = implode("\n", [
-    'Nombre:   ' . $nombre,
-    'Email:    ' . $email,
-    'Teléfono: ' . ($telefono !== '' ? $telefono : '(no indicado)'),
+    'Nombre:      ' . $nombre,
+    'Empresa:     ' . ($empresa  !== '' ? $empresa  : '(no indicada)'),
+    'Email:       ' . $email,
+    'Teléfono:    ' . ($telefono !== '' ? $telefono : '(no indicado)'),
+    'Sector:      ' . $sector,
+    'Servicios:   ' . ($servicios !== [] ? implode(', ', $servicios) : '(ninguno marcado)'),
+    'Presupuesto: ' . ($presu !== '' ? $presu : '(no indicado)'),
     '',
     'Mensaje:',
     $mensaje,
     '',
-    str_repeat('-', 40),
+    str_repeat('-', 46),
     'Enviado desde el formulario de isladigital.net',
+    'Consentimiento RGPD aceptado en el envío.',
     'Fecha: ' . date('d/m/Y H:i:s'),
     'IP:    ' . ($_SERVER['REMOTE_ADDR'] ?? 'desconocida'),
 ]);
