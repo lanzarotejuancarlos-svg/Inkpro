@@ -634,13 +634,74 @@
   #contacto p { color: var(--muted); margin-bottom: 3rem; font-size: 1.05rem; }
 
   .cta-form {
-    display: flex; max-width: 480px;
+    max-width: 620px;
     margin: 0 auto 2.5rem;
-    border: 1px solid rgba(217,70,239,.35);
-    border-radius: 2px;
-    overflow: hidden;
+    text-align: left;
+  }
+  .cta-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+  .field { display: flex; flex-direction: column; gap: .4rem; }
+  .field-wide { grid-column: 1 / -1; }
+  .field > span {
+    font-size: .7rem; font-weight: 500;
+    letter-spacing: .08em; text-transform: uppercase;
+    color: var(--muted);
+  }
+  .field input, .field textarea {
+    font-family: 'DM Sans', sans-serif;
+    font-size: .95rem;
+    color: var(--white);
     background: rgba(13,11,20,.8);
-    backdrop-filter: blur(10px);
+    border: 1px solid rgba(217,70,239,.28);
+    border-radius: 3px;
+    padding: .7rem .9rem;
+    outline: none;
+    transition: border-color .2s, box-shadow .2s;
+    width: 100%;
+  }
+  .field textarea { resize: vertical; min-height: 110px; }
+  .field input:focus, .field textarea:focus {
+    border-color: var(--pink);
+    box-shadow: 0 0 0 3px rgba(217,70,239,.15);
+  }
+  .field input:user-invalid, .field textarea:user-invalid { border-color: #f87171; }
+
+  /* Honeypot: kept in the layout but off-screen, since bots increasingly
+     skip display:none fields. */
+  .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+
+  .cta-form > button {
+    margin-top: 1.2rem;
+    width: 100%;
+    font-family: 'Syne', sans-serif;
+    font-size: .8rem; font-weight: 700;
+    letter-spacing: .12em; text-transform: uppercase;
+    color: var(--white);
+    background: var(--grad);
+    border: 0; border-radius: 3px;
+    padding: .95rem 1.5rem;
+    cursor: pointer;
+    transition: opacity .2s, transform .2s;
+  }
+  .cta-form > button:hover { opacity: .9; transform: translateY(-1px); }
+  .cta-form > button[disabled] { opacity: .55; cursor: progress; transform: none; }
+
+  .cta-status {
+    margin-top: 1rem; padding: .8rem 1rem;
+    font-size: .88rem; line-height: 1.5;
+    border-radius: 3px; text-align: center;
+  }
+  .cta-status[hidden] { display: none; }
+  .cta-status.ok  { color: #86efac; background: rgba(34,197,94,.1);
+                    border: 1px solid rgba(34,197,94,.3); }
+  .cta-status.err { color: #fca5a5; background: rgba(248,113,113,.1);
+                    border: 1px solid rgba(248,113,113,.3); }
+
+  @media (max-width: 620px) {
+    .cta-grid { grid-template-columns: 1fr; }
   }
   .cta-form input {
     flex: 1;
@@ -683,6 +744,27 @@
     transition: border-color .25s, color .25s;
   }
   a.contact-chip { text-decoration: none; }
+  .contact-chip a { color: inherit; text-decoration: none; }
+  /* A mailto: is a dead end for anyone without a configured mail client, and
+     it fails silently. Every address therefore also offers a copy button. */
+  .chip-copy {
+    background: none; border: 0; padding: 0; margin-left: .1rem;
+    display: flex; align-items: center; cursor: pointer;
+    color: var(--muted); opacity: .65; transition: opacity .2s, color .2s;
+  }
+  .chip-copy:hover { opacity: 1; color: var(--lavender); }
+  .chip-copy svg { width: 13px; height: 13px; }
+  .chip-copy.copied { color: #4ade80; opacity: 1; }
+
+  .cta-fallback {
+    max-width: 480px; margin: -1.6rem auto 2.5rem;
+    font-size: .8rem; color: var(--muted);
+    display: flex; align-items: center; justify-content: center;
+    gap: .45rem; flex-wrap: wrap;
+  }
+  .cta-fallback[hidden] { display: none; }
+  .cta-fallback a { color: var(--lavender); text-decoration: none; }
+  .cta-fallback a:hover { text-decoration: underline; }
   .contact-chip:hover { border-color: rgba(217,70,239,.5); color: var(--lavender); }
   .contact-chip .dot { display: flex; align-items: center; width: 16px; height: 16px; flex-shrink: 0; }
   .contact-chip .dot svg { width: 100%; height: 100%; }
@@ -1084,16 +1166,41 @@
     <h2>¿Listo para el <span class="grad-text">siguiente nivel?</span></h2>
     <p>Cuéntanos tu mayor problema. Tenemos la solución.</p>
 
-    <!-- Static hosting: there is no backend to post to, so the button opens
-         the visitor's mail client with their address already quoted. -->
-    <form class="cta-form" id="ctaForm">
-      <input type="email" id="ctaEmail" placeholder="tu@email.com"
-             autocomplete="email" aria-label="Tu email" required />
-      <button type="submit">Hablemos →</button>
+    <form class="cta-form" id="ctaForm" action="contacto.php" method="post" novalidate>
+      <div class="cta-grid">
+        <label class="field">
+          <span>Nombre *</span>
+          <input type="text" name="nombre" required maxlength="100" autocomplete="name">
+        </label>
+        <label class="field">
+          <span>Email *</span>
+          <input type="email" name="email" required maxlength="190" autocomplete="email">
+        </label>
+        <label class="field">
+          <span>Teléfono</span>
+          <input type="tel" name="telefono" maxlength="40" autocomplete="tel">
+        </label>
+        <label class="field field-wide">
+          <span>¿Qué necesitas? *</span>
+          <textarea name="mensaje" required maxlength="5000" rows="4"
+                    placeholder="Cuéntanos tu mayor problema..."></textarea>
+        </label>
+      </div>
+
+      <!-- Honeypot: hidden from people, filled by bots. Not display:none,
+           which some bots detect; pushed off-screen and out of the tab order. -->
+      <div class="hp" aria-hidden="true">
+        <label>No rellenar
+          <input type="text" name="web" tabindex="-1" autocomplete="off">
+        </label>
+      </div>
+
+      <button type="submit" id="ctaSubmit">Hablemos →</button>
+      <p class="cta-status" id="ctaStatus" role="status" aria-live="polite" hidden></p>
     </form>
 
     <div class="contact-row">
-      <a class="contact-chip" href="mailto:hola@isladigital.net"><span class="dot"><svg viewBox="0 0 24 24" fill="none" stroke="url(#iconGrad)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></span> hola@isladigital.net</a>
+      <div class="contact-chip"><span class="dot"><svg viewBox="0 0 24 24" fill="none" stroke="url(#iconGrad)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></span><a href="mailto:hola@isladigital.net">hola@isladigital.net</a><button type="button" class="chip-copy" data-copy="hola@isladigital.net" title="Copiar dirección" aria-label="Copiar dirección"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></div>
       <div class="contact-chip"><span class="dot"><svg viewBox="0 0 24 24" fill="none" stroke="url(#iconGrad)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></span> Lanzarote, Islas Canarias</div>
       <div class="contact-chip"><span class="dot"><svg viewBox="0 0 24 24" fill="none" stroke="url(#iconGrad)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></span> WhatsApp disponible</div>
     </div>
@@ -1158,25 +1265,92 @@
     c.style.transitionDelay = (i * 0.08) + 's';
   });
 
-  // ── CONTACT CTA ──
-  // No backend on static hosting, so hand the enquiry to the visitor's mail
-  // client with their address quoted back, rather than swallowing it.
+  // ── CONTACT FORM ──
+  // Posts to contacto.php in the background. Without JS the form still does a
+  // normal POST and contacto.php renders a page, so nothing is ever lost.
   (function () {
     const form = document.getElementById('ctaForm');
-    const field = document.getElementById('ctaEmail');
-    if (!form || !field) return;
+    const status = document.getElementById('ctaStatus');
+    const button = document.getElementById('ctaSubmit');
+    if (!form || !status || !button) return;
 
-    form.addEventListener('submit', (e) => {
+    const show = (kind, text) => {
+      status.textContent = text;
+      status.className = 'cta-status ' + kind;
+      status.hidden = false;
+    };
+
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const from = field.value.trim();
-      const subject = 'Consulta desde isladigital.net';
-      const body =
-        'Hola Isla Digital,\n\nMe gustaría que me contactéis.\n\n' +
-        'Mi email: ' + (from || '(escríbelo aquí)') + '\n\n' +
-        'Cuéntanos tu caso:\n';
-      window.location.href = 'mailto:hola@isladigital.net'
-        + '?subject=' + encodeURIComponent(subject)
-        + '&body=' + encodeURIComponent(body);
+
+      // Let the browser point at the first bad field before we do anything
+      if (!form.checkValidity()) { form.reportValidity(); return; }
+
+      button.disabled = true;
+      const original = button.textContent;
+      button.textContent = 'Enviando...';
+      status.hidden = true;
+
+      try {
+        const res = await fetch(form.action, {
+          method: 'POST',
+          body: new FormData(form),
+          headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' },
+        });
+        const data = await res.json().catch(() => ({}));
+
+        if (res.ok && data.ok) {
+          show('ok', data.mensaje || '¡Gracias! Hemos recibido tu mensaje.');
+          form.reset();
+        } else {
+          show('err', data.mensaje ||
+            'No se pudo enviar. Escríbenos a hola@isladigital.net');
+        }
+      } catch (err) {
+        // Network down, or opened as a local file with no PHP behind it
+        show('err', 'No hay conexión con el servidor. ' +
+                    'Escríbenos a hola@isladigital.net');
+      } finally {
+        button.disabled = false;
+        button.textContent = original;
+      }
+    });
+  })();
+
+  // ── COPY-TO-CLIPBOARD ──
+  // navigator.clipboard needs a secure context, which a plain http:// or a
+  // local file is not, so fall back to the old execCommand path.
+  (function () {
+    const copiar = async (texto) => {
+      try {
+        if (navigator.clipboard && window.isSecureContext) {
+          await navigator.clipboard.writeText(texto);
+          return true;
+        }
+      } catch (e) { /* fall through */ }
+      try {
+        const ta = document.createElement('textarea');
+        ta.value = texto;
+        ta.setAttribute('readonly', '');
+        ta.style.cssText = 'position:absolute;left:-9999px';
+        document.body.appendChild(ta);
+        ta.select();
+        const ok = document.execCommand('copy');
+        ta.remove();
+        return ok;
+      } catch (e) { return false; }
+    };
+
+    document.querySelectorAll('.chip-copy').forEach((btn) => {
+      btn.addEventListener('click', async (e) => {
+        e.preventDefault();
+        if (await copiar(btn.dataset.copy || '')) {
+          btn.classList.add('copied');
+          const antes = btn.title;
+          btn.title = '¡Copiado!';
+          setTimeout(() => { btn.classList.remove('copied'); btn.title = antes; }, 1600);
+        }
+      });
     });
   })();
 
